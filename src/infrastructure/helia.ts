@@ -4,6 +4,7 @@ import { Injectable, OnApplicationBootstrap, OnModuleDestroy } from '@nestjs/com
 import { createHelia, HeliaLibp2p } from 'helia';
 import { CID } from 'multiformats/cid';
 import { IPFSClient } from '../domain/ipfs-client.interface';
+import { PostRequestDto } from '../ipfs/dto/request.dto.js';
 
 @Injectable()
 export class Helia implements OnApplicationBootstrap, OnModuleDestroy, IPFSClient {
@@ -15,7 +16,7 @@ export class Helia implements OnApplicationBootstrap, OnModuleDestroy, IPFSClien
         return cid.toString();
     }
 
-    async uploadJSON(record: Record<string, unknown>): Promise<string> {
+    async uploadJSON(record: PostRequestDto): Promise<string> {
         const heliaJson = json(this.helia);
         const cid = await heliaJson.add(record);
         return cid.toString();

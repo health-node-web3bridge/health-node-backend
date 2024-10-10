@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Blob } from 'node:buffer';
 import { PinataSDK } from 'pinata-web3';
 import { IPFSClient } from '../domain/ipfs-client.interface';
+import { PostRequestDto } from '../ipfs/dto/request.dto.js';
 
 @Injectable()
 export class Pinata implements OnModuleInit, IPFSClient {
@@ -19,7 +20,7 @@ export class Pinata implements OnModuleInit, IPFSClient {
         return cid.IpfsHash;
     }
 
-    async uploadJSON(record: Record<string, unknown>): Promise<string> {
+    async uploadJSON(record: PostRequestDto): Promise<string> {
         const cid = await this.pinata.upload.json(record, {
             metadata: { name: `record-${Date.now()}.json` },
         });
