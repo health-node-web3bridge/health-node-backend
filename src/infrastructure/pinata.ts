@@ -1,0 +1,50 @@
+import { Injectable, OnModuleInit } from '@nestjs/common';
+// import FormData from 'form-data';
+import { Blob } from 'node:buffer';
+import { PinataSDK } from 'pinata-web3';
+import { IPFSClient } from '../domain/ipfs-client.interface';
+
+@Injectable()
+export class Pinata implements OnModuleInit, IPFSClient {
+  private pinata: PinataSDK;
+
+  async uploadFile(file: Express.Multer.File): Promise<string> {
+    //@ts-expect-error - The buffer will be streamed
+    const cid = await this.pinata.upload.stream(file.buffer, {
+      metadata: { name: `record-${Date.now()}.${file.mimetype.split('/')[1]}` },
+    });
+
+    return cid.IpfsHash;
+  }
+
+  async uploadJSON(record: Record<string, unknown>): Promise<string> {
+    const cid = await this.pinata.upload.json(record, {
+      metadata: { name: `record-${Date.now()}.json` },
+    });
+    return cid.IpfsHash;
+  }
+
+  async getFile(hash: string): Promise<Buffer> {
+    const { data, contentType } = await this.pinata.gateways.get(hash);
+    if (data instanceof Blob) {
+      const arrayBuffer = await data.arrayBuffer();
+      return Buffer.from(arrayBuffer);
+    }
+    return Buffer.from(data as string);
+  }
+
+  async getRecord(hash: string): Promise<JSON> {
+    const { data, contentType } = await this.pinata.gateways.get(hash);
+    if (contentType !== 'application/json')
+      throw new Error('Unsupported content type');
+
+    return data as JSON;
+  }
+
+  async onModuleInit() {
+    this.pinata = new PinataSDK({
+      pinataJwt: process.env.PINATA_JWT,
+      pinataGateway: process.env.PINATA_GATEWAY_URL,
+    });
+  }
+}
