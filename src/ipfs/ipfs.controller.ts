@@ -8,11 +8,17 @@ import {
     Post,
     Query,
     UploadedFile,
+    UseFilters,
     UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ErrorExceptionFilter } from '../utils/exception-handler/error-exception.filter.js';
+import { HttpResponse } from '../utils/http-resources/http-response.js';
+import { HttpResponseMapper } from '../utils/http-resources/http-response.mapper.js';
+import { GetRequestDto, PostRequestDto } from './dto/request.dto.js';
 import { IPFSService } from './ipfs.service.js';
 
+@UseFilters(ErrorExceptionFilter)
 @Controller()
 export class IpfsController {
     constructor(private readonly ipfsService: IPFSService) {}
@@ -28,29 +34,29 @@ export class IpfsController {
                 .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
         )
         file: Express.Multer.File,
-    ): Promise<{ cid: string }> {
+    ): Promise<HttpResponse<{ cid: string }>> {
         const cid = await this.ipfsService.uploadFile(file);
-        return { cid };
+        return HttpResponseMapper.map({ cid });
     }
 
     @Post('/record')
     @HttpCode(HttpStatus.CREATED)
-    async uploadRecord(@Body() body: Record<string, unknown>): Promise<{ cid: string }> {
+    async uploadRecord(@Body() body: PostRequestDto): Promise<HttpResponse<{ cid: string }>> {
         const cid = await this.ipfsService.uploadRecord(body);
-        return { cid };
+        return HttpResponseMapper.map({ cid });
     }
 
     @Get('/file')
     @HttpCode(HttpStatus.OK)
-    async getFile(@Query('hash') hash: string) {
-        const base64String = this.ipfsService.getFile(hash);
-        return base64String;
+    async getFile(@Query() { hash }: GetRequestDto): Promise<HttpResponse<{ data: string }>> {
+        const data = await this.ipfsService.getFile(hash);
+        return HttpResponseMapper.map({ data });
     }
 
     @Get('/record')
     @HttpCode(HttpStatus.OK)
-    async getRecord(@Query('hash') hash: string) {
-        const record = this.ipfsService.getRecord(hash);
-        return record;
+    async getRecord(@Query() { hash }: GetRequestDto): Promise<HttpResponse<{ data: JSON }>> {
+        const data = await this.ipfsService.getRecord(hash);
+        return HttpResponseMapper.map({ data });
     }
 }

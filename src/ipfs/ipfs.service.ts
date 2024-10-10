@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { IPFSEnum } from '../domain/ipfs-client.interface.js';
 import { Helia } from '../infrastructure/helia.js';
 import { Pinata } from '../infrastructure/pinata.js';
+import { PostRequestDto } from './dto/request.dto.js';
 
 @Injectable()
 export class IPFSService {
@@ -12,6 +14,7 @@ export class IPFSService {
         private readonly helia: Helia,
         private readonly pinata: Pinata,
         private readonly configService: ConfigService,
+        @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     ) {
         this.ipfsClient = this.configService.get('IPFS_CLIENT') === IPFSEnum.HELIA ? this.helia : this.pinata;
     }
@@ -20,17 +23,17 @@ export class IPFSService {
             const cid = await this.ipfsClient.uploadFile(file);
             return cid.toString();
         } catch (error) {
-            console.error('Error uploading file to IPFS:', error);
+            this.logger.error('Error uploading file to IPFS:', error);
             throw new Error('Failed to upload file to IPFS');
         }
     }
 
-    async uploadRecord(record: Record<string, unknown>): Promise<string> {
+    async uploadRecord(record: PostRequestDto): Promise<string> {
         try {
             const cid = await this.ipfsClient.uploadJSON(record);
             return cid;
         } catch (error) {
-            console.error('Error uploading JSON to IPFS:', error);
+            this.logger.error('Error uploading JSON to IPFS:', error);
             throw new Error('Failed to upload JSON to IPFS');
         }
     }
@@ -41,7 +44,7 @@ export class IPFSService {
             const base64Data = fileBuffer.toString('base64');
             return base64Data;
         } catch (error) {
-            console.error('Error getting file on IPFS:', error);
+            this.logger.error('Error getting file on IPFS:', error);
             throw new Error('Failed to get file on IPFS');
         }
     }
@@ -51,7 +54,7 @@ export class IPFSService {
             const record = await this.ipfsClient.getRecord(hash);
             return record;
         } catch (error) {
-            console.error('Error getting Record on IPFS:', error);
+            this.logger.error('Error getting Record on IPFS:', error);
             throw new Error('Failed to get Record on IPFS');
         }
     }
