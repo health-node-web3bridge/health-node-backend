@@ -65,15 +65,11 @@ npm run start:dev
 
 The backend will run on `http://localhost:3003/`.
 
-### Environment Variables
+##
 
-The application requires several environment variables to work correctly:
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://app.getpostman.com/run-collection/30184044-365d3cfb-0798-448e-8d0b-2774941ce516?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D30184044-365d3cfb-0798-448e-8d0b-2774941ce516%26entityType%3Dcollection%26workspaceId%3D87ee739b-41e7-4576-8563-af306c8635ce)
 
--   `PORT`: The port the application will run on. Defaults to `3003`.
--   `PINATA_GATEWAY_URL`: The URL for the Pinata gateway to access files and records.
--   `PINATA_SECRET`: Your Pinata secret key for secure uploads.
--   `PINATA_JWT`: A JSON Web Token (JWT) used for authenticating with Pinata.
--   `IPFS_CLIENT`: Specifies the IPFS client. Defaults to Pinata.
+---
 
 ## Contributing
 
