@@ -24,14 +24,14 @@ export class IpfsController {
     constructor(private readonly ipfsService: IPFSService) {}
 
     @UseInterceptors(FileInterceptor('file'))
-    @Post('/upload')
+    @Post('/file')
     @HttpCode(HttpStatus.CREATED)
     async uploadFile(
         @UploadedFile(
             new ParseFilePipeBuilder()
-                .addFileTypeValidator({ fileType: 'csv' })
-                .addMaxSizeValidator({ maxSize: 256000 })
-                .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
+                .addMaxSizeValidator({ maxSize: 2 * 1024 * 1024 }) //2MB
+                .addFileTypeValidator({ fileType: /(csv|png|jpeg|jpg|txt)$/i })
+                .build({ errorHttpStatusCode: HttpStatus.BAD_REQUEST }),
         )
         file: Express.Multer.File,
     ): Promise<HttpResponse<{ cid: string }>> {
