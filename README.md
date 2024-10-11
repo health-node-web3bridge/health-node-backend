@@ -1,73 +1,84 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Decentralized Health Service Dapp - Backend Service
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is the backend service for the **Health-Node** application, a decentralized platform aimed at revolutionizing the healthcare sector. The platform empowers users to manage their medical records, book doctor services, and engage in live consultations from the comfort of their homes using a secure blockchain solution.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+The backend is designed to handle various operations including decentralized storage of medical files and records to IPFS (InterPlanetary File System).
 
-## Description
+## Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+-   **Decentralized Record Management:** Medical records are stored on a decentralized system using IPFS, providing both security and privacy.
+-   **File and Record Upload to IPFS:** Upload medical files (csv|png|jpeg|jpg|txt) and records to decentralized storage.
+-   **Live Consultations:** Enabling secure, remote healthcare services.
+-   **Blockchain-based:** Ensures data integrity, immutability, and transparency.
 
-## Installation
+## File and Record Upload to IPFS
+
+This feature enables the upload of files and medical records to the decentralized storage system (IPFS) using Helia and Pinata for pinning and retrieval.
+
+### Endpoints
+
+-   **Upload a File:**
+    -   **POST** `/file`
+    -   Upload a file (2MB max) of type CSV, PNG, JPEG, JPG, or TXT.
+    -   The file is pinned on Pinata, and the CID (Content Identifier) is returned as a response.
+-   **Upload a Record:**
+
+    -   **POST** `/record`
+    -   Submit a medical record in JSON format. The record is uploaded to IPFS, and the CID is returned.
+
+-   **Retrieve a File:**
+
+    -   **GET** `/file`
+    -   Provide a CID to retrieve the content of the file from IPFS.
+
+-   **Retrieve a Record:**
+    -   **GET** `/record`
+    -   Provide a CID to retrieve the medical record from IPFS.
+
+## Getting Started
+
+### Prerequisites
+
+-   **Node.js** (v20.x or later)
+-   **npm** (v10.x or later)
+-   IPFS Pinning Service (Pinata account)
+
+### Installation
+
+1. Clone the repository:
+
+2. Install the dependencies:
 
 ```bash
-$ npm install
+  npm install
 ```
 
-## Running the app
+3. Create a `.env` file in the project root using the .env.example
+
+### Running the Application
+
+Start the application locally:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start:dev
 ```
 
-## Test
+The backend will run on `http://localhost:3003/`.
 
-```bash
-# unit tests
-$ npm run test
+### Environment Variables
 
-# e2e tests
-$ npm run test:e2e
+The application requires several environment variables to work correctly:
 
-# test coverage
-$ npm run test:cov
-```
+-   `PORT`: The port the application will run on. Defaults to `3003`.
+-   `PINATA_GATEWAY_URL`: The URL for the Pinata gateway to access files and records.
+-   `PINATA_SECRET`: Your Pinata secret key for secure uploads.
+-   `PINATA_JWT`: A JSON Web Token (JWT) used for authenticating with Pinata.
+-   `IPFS_CLIENT`: Specifies the IPFS client. Defaults to Pinata.
 
-## Support
+## Contributing
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Contributions are welcome! Feel free to open issues or submit pull requests to improve the project.
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This project is licensed under the MIT License.

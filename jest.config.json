@@ -1,0 +1,25 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "testRegex": ".*\\.spec\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": [
+      "ts-jest",
+      {
+        "useESM": true
+      }
+    ]
+  },
+  "rootDir": ".",
+  "coverageDirectory": "coverage",
+  "collectCoverageFrom": ["**/*.(t|j)s"],
+  "testEnvironment": "node",
+  "moduleDirectories": ["node_modules", "src"],
+  "moduleNameMapper": {
+    "@src/(.*)": "<rootDir>/src/$1",
+    "^(\\.{1,2}/.*)\\.[jt]s$": "$1"
+  },
+  "preset": "ts-jest/presets/default-esm",
+  "setupFiles": ["<rootDir>/test-setup.ts"],
+  "testPathIgnorePatterns": [],
+  "clearMocks": true
+}
