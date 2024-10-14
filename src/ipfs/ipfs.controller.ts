@@ -55,7 +55,7 @@ export class IpfsController {
 
     @Get('/record')
     @HttpCode(HttpStatus.OK)
-    async getRecord(@Query() { hash }: GetRequestDto): Promise<HttpResponse<{ data: JSON }>> {
+    async getRecord(@Query() { hash }: GetRequestDto): Promise<HttpResponse<{ data: PostRequestDto }>> {
         const data = await this.ipfsService.getRecord(hash);
         return HttpResponseMapper.map({ data });
     }

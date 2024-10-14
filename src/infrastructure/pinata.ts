@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { Blob } from 'node:buffer';
 import { PinataSDK } from 'pinata-web3';
 import { IPFSClient } from '../domain/ipfs-client.interface';
-import { PostRequestDto } from '../ipfs/dto/request.dto.js';
 
 @Injectable()
 export class Pinata implements OnModuleInit, IPFSClient {
@@ -20,7 +19,7 @@ export class Pinata implements OnModuleInit, IPFSClient {
         return cid.IpfsHash;
     }
 
-    async uploadJSON(record: PostRequestDto): Promise<string> {
+    async uploadJSON(record: { data: string }): Promise<string> {
         const cid = await this.pinata.upload.json(record, {
             metadata: { name: `record-${Date.now()}.json` },
         });
@@ -28,7 +27,7 @@ export class Pinata implements OnModuleInit, IPFSClient {
     }
 
     async getFile(hash: string): Promise<Buffer> {
-        const { data, contentType } = await this.pinata.gateways.get(hash);
+        const { data } = await this.pinata.gateways.get(hash);
         if (data instanceof Blob) {
             const arrayBuffer = await data.arrayBuffer();
             return Buffer.from(arrayBuffer);
@@ -36,11 +35,11 @@ export class Pinata implements OnModuleInit, IPFSClient {
         return Buffer.from(data as string);
     }
 
-    async getRecord(hash: string): Promise<JSON> {
+    async getRecord(hash: string): Promise<{ data: string }> {
         const { data, contentType } = await this.pinata.gateways.get(hash);
         if (contentType !== 'application/json') throw new Error('Unsupported content type');
 
-        return data as JSON;
+        return data as unknown as { data: string };
     }
 
     async onModuleInit() {

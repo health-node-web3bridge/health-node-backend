@@ -1,10 +1,8 @@
-import { PostRequestDto } from '../ipfs/dto/request.dto.js';
-
 export interface IPFSClient {
     uploadFile(file: Express.Multer.File): Promise<string>;
-    uploadJSON(record: PostRequestDto): Promise<string>;
+    uploadJSON(record: { data: string }): Promise<string>;
     getFile(hash: string): Promise<Buffer>;
-    getRecord(hash: string): Promise<JSON>;
+    getRecord(hash: string): Promise<{ data: string }>;
 }
 
 export enum IPFSEnum {
