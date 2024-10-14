@@ -14,6 +14,6 @@ export class MeetingRequestDto {
     readonly patientEmail: string;
 
     @IsNumber()
-    @Min(Date.now())
+    @Min(Date.now(), { message: 'Appointment time must be in the future' })
     readonly appointmentTime: number;
 }

@@ -4,7 +4,9 @@ import { WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 import { IPFSEnum } from '../domain/ipfs-client.interface.js';
 import { Helia } from '../infrastructure/helia.js';
 import { Pinata } from '../infrastructure/pinata.js';
+import { CryptoService } from '../utils/cryptography.js';
 import { PostRequestDto } from './dto/request.dto.js';
+import { RecordResponseDto } from './dto/response.dto.js';
 
 @Injectable()
 export class IPFSService {
@@ -14,6 +16,7 @@ export class IPFSService {
         private readonly helia: Helia,
         private readonly pinata: Pinata,
         private readonly configService: ConfigService,
+        private readonly cryptoService: CryptoService,
         @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger,
     ) {
         this.ipfsClient = this.configService.get('IPFS_CLIENT') === IPFSEnum.HELIA ? this.helia : this.pinata;
@@ -30,7 +33,8 @@ export class IPFSService {
 
     async uploadRecord(record: PostRequestDto): Promise<string> {
         try {
-            const cid = await this.ipfsClient.uploadJSON(record);
+            const encryptedRecord = await this.cryptoService.encryptJsonData(record);
+            const cid = await this.ipfsClient.uploadJSON({ data: encryptedRecord });
             return cid;
         } catch (error) {
             this.logger.error('Error uploading JSON to IPFS:', error);
@@ -49,10 +53,11 @@ export class IPFSService {
         }
     }
 
-    async getRecord(hash: string): Promise<JSON> {
+    async getRecord(hash: string): Promise<RecordResponseDto> {
         try {
-            const record = await this.ipfsClient.getRecord(hash);
-            return record;
+            const { data } = await this.ipfsClient.getRecord(hash);
+            const decryptedRecord = await this.cryptoService.decryptJsonData(data);
+            return decryptedRecord;
         } catch (error) {
             this.logger.error('Error getting Record on IPFS:', error);
             throw new Error('Failed to get Record on IPFS');
@@ -64,7 +69,7 @@ export class IPFSService {
         return records;
     }
 
-    async getRecords(hashes: string[]): Promise<JSON[]> {
+    async getRecords(hashes: string[]): Promise<PostRequestDto[]> {
         const records = await Promise.all(hashes.map(hash => this.getRecord(hash)));
 
         return records;

@@ -17,7 +17,7 @@ describe('AppController (e2e)', () => {
             .overrideProvider(IPFSService)
             .useValue(ipfsServiceMock)
             .overrideProvider(ConfigService)
-            .useValue({ get: jest.fn() })
+            .useValue({ get: jest.fn(() => 'test_value') })
             .compile();
 
         app = moduleFixture.createNestApplication();

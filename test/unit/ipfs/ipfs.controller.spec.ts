@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { RecordResponseDto } from '../../../src/ipfs/dto/response.dto.js';
 import { IpfsController } from '../../../src/ipfs/ipfs.controller.js';
 import { IPFSService } from '../../../src/ipfs/ipfs.service.js';
 import { HttpResponseMapper } from '../../../src/utils/http-resources/http-response.mapper.js';
@@ -54,7 +55,7 @@ describe('IpfsController', () => {
 
         it('should successfully get JSON record', async () => {
             const hash = '#';
-            const data = JSON.stringify(record) as unknown as JSON;
+            const data = JSON.stringify(record) as unknown as RecordResponseDto;
             const expectedReturnData = HttpResponseMapper.map({ data });
 
             ipfsServiceMock.getRecord.mockResolvedValue(data);

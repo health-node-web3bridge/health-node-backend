@@ -6,4 +6,6 @@ export const configValidationSchema = Joi.object({
     PINATA_SECRET: Joi.string().required(),
     PINATA_JWT: Joi.string().required(),
     IPFS_CLIENT: Joi.string().optional(),
+    ENCRYPTION_ALGORITHM: Joi.string().optional(),
+    SECRET_KEY: Joi.string().optional(),
 });

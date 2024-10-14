@@ -2,11 +2,11 @@
 
 This is the backend service for the **Health-Node** application, a decentralized platform aimed at revolutionizing the healthcare sector. The platform empowers users to manage their medical records, book doctor services, and engage in live consultations from the comfort of their homes using a secure blockchain solution.
 
-The backend is designed to handle various operations including decentralized storage of medical files and records to IPFS (InterPlanetary File System).
+The backend is designed to handle various operations including decentralized storage of medical files and records to IPFS (InterPlanetary File System). The medical record is encrypted using AES (Advanced Encryption Standard) algorithm.
 
 ## Features
 
--   **Decentralized Record Management:** Medical records are stored on a decentralized system using IPFS, providing both security and privacy.
+-   **Decentralized Record Management:** Encrypted medical records are stored on a decentralized system using IPFS, providing both security and privacy.
 -   **File and Record Upload to IPFS:** Upload medical files (csv|png|jpeg|jpg|txt) and records to decentralized storage.
 -   **Live Consultations:** Enabling secure, remote healthcare services.
 -   **Blockchain-based:** Ensures data integrity, immutability, and transparency.
@@ -32,8 +32,19 @@ This feature enables the upload of files and medical records to the decentralize
     -   Provide a CID to retrieve the content of the file from IPFS.
 
 -   **Retrieve a Record:**
+
     -   **GET** `/record`
     -   Provide a CID to retrieve the medical record from IPFS.
+
+-   **Generate meeting links:**
+
+    -   **POST** `/meeting-link`
+    -   Generate meeting links for the doctor and patient.
+
+-   **Generate meeting tokens:**
+
+    -   **POST** `/meeting-token`
+    -   Generate meeting jwt token for the doctor and patient. To be used with the jitsi sdk on the frontend.
 
 ## Getting Started
 
