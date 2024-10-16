@@ -23,6 +23,12 @@ import { IPFSService } from './ipfs.service.js';
 export class IpfsController {
     constructor(private readonly ipfsService: IPFSService) {}
 
+    @Get('/')
+    @HttpCode(HttpStatus.CREATED)
+    async getStatus(): Promise<string> {
+        return 'Server is up';
+    }
+
     @UseInterceptors(FileInterceptor('file'))
     @Post('/file')
     @HttpCode(HttpStatus.CREATED)
