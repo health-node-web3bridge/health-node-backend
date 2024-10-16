@@ -15,7 +15,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ErrorExceptionFilter } from '../utils/exception-handler/error-exception.filter.js';
 import { HttpResponse } from '../utils/http-resources/http-response.js';
 import { HttpResponseMapper } from '../utils/http-resources/http-response.mapper.js';
-import { GetRequestDto, PostRequestDto } from './dto/request.dto.js';
+import { GetRecordsRequestDto, GetRequestDto, PostRequestDto } from './dto/request.dto.js';
 import { IPFSService } from './ipfs.service.js';
 
 @UseFilters(ErrorExceptionFilter)
@@ -57,6 +57,13 @@ export class IpfsController {
     @HttpCode(HttpStatus.OK)
     async getRecord(@Query() { hash }: GetRequestDto): Promise<HttpResponse<{ data: PostRequestDto }>> {
         const data = await this.ipfsService.getRecord(hash);
+        return HttpResponseMapper.map({ data });
+    }
+
+    @Post('/records')
+    @HttpCode(HttpStatus.OK)
+    async getRecords(@Body() { hashes }: GetRecordsRequestDto): Promise<HttpResponse<{ data: PostRequestDto[] }>> {
+        const data = await this.ipfsService.getRecords(hashes);
         return HttpResponseMapper.map({ data });
     }
 }
