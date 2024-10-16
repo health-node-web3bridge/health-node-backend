@@ -12,9 +12,12 @@ async function bootstrap() {
     //CORS setting
     app.enableCors({
         origin: '*',
-        methods: 'GET,POST',
+        methods: 'GET,OPTIONS,POST',
         preflightContinue: false,
         optionsSuccessStatus: 204,
+        credentials: true,
+        allowedHeaders:
+            'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
     });
 
     await app.listen(port);
